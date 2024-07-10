@@ -1,5 +1,6 @@
 package org.owasp.webgoat.lessons.pathtraversal;
 
+import java.nio.file.Paths;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.owasp.webgoat.container.assignments.AssignmentEndpoint;
@@ -85,7 +86,13 @@ public class ProfileUploadRetrieval extends AssignmentEndpoint {
 //            var id = request.getParameter("id");
             // comment
             // comment 2
-            (new File(request.getParameter("id"))).exists();
+              String filePath = request.getParameter("id");
+              File file = new File(filePath);
+              String normalizedPath = file.getCanonicalPath();
+              if (!normalizedPath.startsWith(new File("./base/directory").getCanonicalPath())) {
+                throw new SecurityException("Error: Attempt to access file outside of the base directory.");
+              }
+              file.exists();
 
 //            if (catPicture.getName().toLowerCase().contains("path-traversal-secret.jpg")) {
 //                return ResponseEntity.ok()
